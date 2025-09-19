@@ -1,1 +1,7 @@
+images/*
+!images/.gitkeep
+
+*.png
+*.jpg
+*.jpeg
 !Max.jpg
