@@ -13,14 +13,16 @@ readme = 'README.md'
 requires-python = '>=3.12'
 
 dependencies = [
-  'matplotlib',
-  'seaborn',
-  'pandas',
-  'numpy',
-  'streamlit',
-  'scikit-learn',
+  'matplotlib==3.10.6',
+  'seaborn==0.13.2',
+  'pandas==2.3.2',
+  'numpy==2.3.3',
+  'streamlit==1.49.1',
+  'scikit-learn==1.7.2',
   'Pillow',
-  'tqdm',
+  'tqdm==4.67.1',
+  'torch==2.8.0',
+  'torchvision==0.23.0',
 ]
 
 [tool.setuptools.packages.find]
@@ -28,10 +30,10 @@ where = ['src']
 
 [project.optional-dependencies]
 dev = [
-  'black',
+  'black==25.9.0',
   'pre-commit',
-  'mypy',
-  'types-PyYAML'
+  'mypy==1.18.2',
+  'types-PyYAML>=6.0.12',
 ]
 
 [tool.black]
