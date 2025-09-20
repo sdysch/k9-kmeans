@@ -1,3 +1,4 @@
+# python
 from PIL import Image
 from transformers import CLIPProcessor, CLIPModel
 from typing import List
@@ -5,10 +6,16 @@ import io
 import numpy as np
 import torch
 
+# local
+from k9kmeans.logging import setup_logger
+
+logger = setup_logger(__name__)
+
 
 def load_and_preprocess_image(path: str) -> Image.Image:
     """Load an image from disk and convert to RGB."""
     img = Image.open(path).convert('RGB')
+    logger.debug(f'Loaded image {path} with size {img.size} and mode {img.mode}')
     return img
 
 

@@ -7,3 +7,4 @@ images/*
 !Max.jpg
 
 data/*.csv
+data/*.parquet
