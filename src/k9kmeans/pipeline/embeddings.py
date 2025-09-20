@@ -4,10 +4,12 @@ from tqdm import tqdm
 from transformers import CLIPModel, CLIPProcessor
 import logging
 import numpy as np
+from numpy.typing import NDArray
 import os
 import pandas as pd
 import sys
 import torch
+import argparse
 
 # local
 from k9kmeans.utils import load_and_preprocess_image, get_embeddings
@@ -61,24 +63,20 @@ def main(args: argparse.Namespace) -> None:
     processor = CLIPProcessor.from_pretrained(model_name)
 
     # get embeddings
-    all_embeddings = []
-
+    all_embeddings: list[NDArray[np.float32]] = []
     for i in tqdm(range(0, len(images), args.batch_size), desc='Extracting embeddings'):
         batch = images[i : i + args.batch_size]
         emb = get_embeddings(batch, processor, model, device=device)
         all_embeddings.append(emb)
 
-    all_embeddings = np.vstack(all_embeddings)
+    all_embeddings_array: NDArray[np.float32] = np.vstack(all_embeddings)
 
     # save to csv
-    df = pd.DataFrame({'filename': filenames, 'embedding': list(all_embeddings)})
-
+    df = pd.DataFrame({'filename': filenames, 'embedding': list(all_embeddings_array)})
     df.to_parquet(args.outfile, index=False)
 
 
 if __name__ == '__main__':
-
-    import argparse
 
     parser = argparse.ArgumentParser()
 

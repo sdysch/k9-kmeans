@@ -1,9 +1,10 @@
 # python
 from PIL import Image
 from transformers import CLIPProcessor, CLIPModel
-from typing import List
+from typing import List, cast
 import io
 import numpy as np
+from numpy.typing import NDArray
 import torch
 
 # local
@@ -24,9 +25,11 @@ def get_embeddings(
     processor: CLIPProcessor,
     model: CLIPModel,
     device: str = 'cpu',
-) -> np.ndarray:
+) -> NDArray[np.float32]:
     """Extract CLIP embeddings for a list of PIL images."""
     inputs = processor(images=images, return_tensors='pt', padding=True)
     with torch.no_grad():
         embeddings = model.get_image_features(**inputs.to(device))
-    return embeddings.cpu().numpy().astype(np.float32, copy=False)
+    return cast(
+        NDArray[np.float32], embeddings.cpu().numpy().astype(np.float32, copy=False)
+    )
