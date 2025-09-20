@@ -17,6 +17,8 @@ pip install -e '.[dev]'
 ## Visualisation
 ```
 run_dashboard --csv data/results_initial.csv
+# or
+streamlit run src/k9kmeans/app/dashboard.py -- --csv data/results_initial.csv
 ```
 
 where `data/results_initial.csv` is a CSV file with the following columns:
