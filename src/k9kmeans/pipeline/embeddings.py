@@ -54,7 +54,15 @@ def main(args: argparse.Namespace) -> None:
     logger.info(f'Found {len(filenames)} images in directory {base_path}')
 
     # image preprocessing
-    images = [load_and_preprocess_image(f) for f in filenames]
+    added_filenames = []
+    images = []
+    for i in tqdm(filenames, desc='Loading and preprocessing images'):
+        try:
+            images.append(load_and_preprocess_image(i))
+        except Exception as e:
+            logger.warning(f'Error loading image {i}: {e}')
+            continue
+        added_filenames.append(i)
 
     # load model and processor
     model_name = MODEL_NAME  # later from args?
@@ -71,8 +79,15 @@ def main(args: argparse.Namespace) -> None:
 
     all_embeddings_array: NDArray[np.float32] = np.vstack(all_embeddings)
 
+    assert (
+        len(added_filenames) == all_embeddings_array.shape[0]
+    ), "Number of filenames and embeddings do not match"
+
     # save to csv
-    df = pd.DataFrame({'filename': filenames, 'embedding': list(all_embeddings_array)})
+    df = pd.DataFrame(
+        {'filename': added_filenames, 'embedding': list(all_embeddings_array)}
+    )
+
     df.to_parquet(args.outfile, index=False)
 
 
