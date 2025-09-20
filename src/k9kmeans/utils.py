@@ -22,4 +22,4 @@ def get_embeddings(
     inputs = processor(images=images, return_tensors='pt', padding=True)
     with torch.no_grad():
         embeddings = model.get_image_features(**inputs.to(device))
-    return embeddings.cpu().numpy()
+    return embeddings.cpu().numpy().astype(np.float32, copy=False)
