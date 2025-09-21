@@ -22,13 +22,12 @@ MODEL_NAME = 'openai/clip-vit-base-patch32'
 
 def main(args: argparse.Namespace) -> None:
 
+    # setup logger
     log_level = logging.DEBUG if args.debug else logging.INFO
     logger = setup_logger(__name__, level=log_level)
-    logging.basicConfig(
-        level=log_level,
-    )
 
-    logger.debug('Debug logging enabled')
+    if args.debug:
+        logger.debug('Debug logging enabled')
     logger.info(f'Using image_dir: {args.image_dir}')
 
     # extract all image filenames
@@ -53,42 +52,54 @@ def main(args: argparse.Namespace) -> None:
 
     logger.info(f'Found {len(filenames)} images in directory {base_path}')
 
-    # image preprocessing
-    added_filenames = []
-    images = []
-    for i in tqdm(filenames, desc='Loading and preprocessing images'):
-        try:
-            images.append(load_and_preprocess_image(i))
-        except Exception as e:
-            logger.warning(f'Error loading image {i}: {e}')
-            continue
-        added_filenames.append(i)
-
     # load model and processor
-    model_name = MODEL_NAME  # later from args?
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
+    model_name = MODEL_NAME  # could make this an arg later
     model = CLIPModel.from_pretrained(model_name).to(device)
     processor = CLIPProcessor.from_pretrained(model_name)
 
-    # get embeddings
+    added_filenames: list[str] = []
     all_embeddings: list[NDArray[np.float32]] = []
-    for i in tqdm(range(0, len(images), args.batch_size), desc='Extracting embeddings'):
-        batch = images[i : i + args.batch_size]
-        emb = get_embeddings(batch, processor, model, device=device)
+
+    # iterate in batches
+    for i in tqdm(
+        range(0, len(filenames), args.batch_size),
+        desc='Loading images and computing embeddings',
+    ):
+        batch_paths = filenames[i : i + args.batch_size]
+        images = []
+
+        for path in batch_paths:
+            try:
+                images.append(load_and_preprocess_image(path))
+                added_filenames.append(path)
+            except Exception as e:
+                logger.warning(f'Error loading image {path}: {e}')
+                continue
+
+        # skip empty batches
+        if not images:
+            continue
+
+        # get embeddings for this batch
+        emb = get_embeddings(images, processor, model, device=device)
         all_embeddings.append(emb)
 
+    # combine all embeddings
     all_embeddings_array: NDArray[np.float32] = np.vstack(all_embeddings)
 
-    assert (
-        len(added_filenames) == all_embeddings_array.shape[0]
-    ), "Number of filenames and embeddings do not match"
+    assert len(added_filenames) == all_embeddings_array.shape[0], (
+        f'Number of filenames ({len(added_filenames)}) and embeddings '
+        f'({all_embeddings_array.shape[0]}) do not match'
+    )
 
-    # save to csv
+    # save results
     df = pd.DataFrame(
         {'filename': added_filenames, 'embedding': list(all_embeddings_array)}
     )
 
     df.to_parquet(args.outfile, index=False)
+    logger.info(f'Saved embeddings to {args.outfile}')
 
 
 if __name__ == '__main__':
