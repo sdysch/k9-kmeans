@@ -12,7 +12,7 @@ import torch
 import argparse
 
 # local
-from k9kmeans.utils import load_and_preprocess_image, get_embeddings
+from k9kmeans.image_utils.processing import load_and_preprocess_image, get_embeddings
 from k9kmeans.logging import setup_logger
 
 
