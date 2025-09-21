@@ -36,6 +36,7 @@ dev = [
   'pre-commit',
   'mypy==1.18.2',
   'types-PyYAML>=6.0.12',
+  'pytest',
 ]
 
 [tool.black]
@@ -62,6 +63,12 @@ python_version = 3.12
 files = "src"
 ignore_missing_imports = true
 strict = true
+
+[tool.pytest.ini_options]
+minversion = "7.0"
+addopts = "-ra -q"
+testpaths = ["tests"]
+python_files = ["test_*.py"]
 
 [project.scripts]
 run_dashboard = "k9kmeans.app.app_cli:main"
