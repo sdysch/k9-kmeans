@@ -6,5 +6,5 @@ images/*
 *.jpeg
 !Max.jpg
 
-data/*.csv
-data/*.parquet
+data/*
+!data/.gitkeep
