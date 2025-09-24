@@ -5,7 +5,7 @@ import psutil
 from concurrent.futures import ProcessPoolExecutor, as_completed
 
 # Parameter ranges
-eps_values = [0.1, 0.5, 1.0, 1.5, 2.0, 2.5, 3.0]
+eps_values = [0.1, 0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 5.0, 10.0, 11.0]
 metrics = ['cosine', 'euclidean']
 min_samples_values = [3, 5, 10, 15, 20]
 
