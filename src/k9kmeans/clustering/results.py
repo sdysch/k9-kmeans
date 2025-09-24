@@ -8,3 +8,4 @@ from typing import Any
 class ClusterResult:
     labels: NDArray[np.int32]
     metadata: dict[str, Any] | None = None
+    silhouette_score: float | None = None

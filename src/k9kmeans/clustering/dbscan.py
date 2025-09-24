@@ -6,6 +6,7 @@ import numpy as np
 from pathlib import Path
 
 from sklearn.cluster import DBSCAN
+from sklearn.metrics import silhouette_score
 
 # local
 from k9kmeans.logging import setup_logger
@@ -44,8 +45,15 @@ def run_dbscan(
     num_clusters = len(set(cluster_labels)) - (1 if -1 in cluster_labels else 0)
     num_noise = list(cluster_labels).count(-1)
 
-    logger.info(f'Found {num_clusters} clusters')
-    logger.info(f'Found {num_noise} noise points')
+    mask = cluster_labels != -1
+    try:
+        sil_score = silhouette_score(embeddings[mask], cluster_labels[mask])
+    except ValueError:
+        sil_score = np.nan
+
+    logger.debug(f'Found {num_clusters} clusters')
+    logger.debug(f'Found {num_noise} noise points')
+    logger.debug(f'silhouette score (excluding noise): {sil_score}')
 
     return ClusterResult(
         labels=cluster_labels,
@@ -54,7 +62,10 @@ def run_dbscan(
             'eps': eps,
             'min_samples': min_samples,
             'metric': metric,
+            'num_clusters': num_clusters,
+            'num_noise': num_noise,
         },
+        silhouette_score=sil_score,
     )
 
 

@@ -66,5 +66,6 @@ TODO: Add explanation of scatter plots, silhouette score, etc
 	- [X] Add script to loop over multiple experiments and make plots
 	- [ ] Include metrics like silhouette score, elbow plot for kmeans, etc
 	- [ ] Number of points/cluster (how many are noise according to dbscan?)
+- [ ] Log and save model used for embeddings
 
 <img src="Max.jpg" alt="Max" style="width:50%;">
