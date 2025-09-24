@@ -50,6 +50,7 @@ TODO: Add explanation of scatter plots, silhouette score, etc
 	- [ ] Pictures of Max with other dogs:
 		- [ ] Initially cleanup by manually selecting pictures of just Max
 		- [ ] Stretch goal would be to use a pre-trained model to identify pictures of multiple dogs, and filter these out
+	- [ ] Many images are being clustered because they have similar	backgrounds (e.g. same wall, same floor)
 - [o] Clustering:
 	- [o] Experiment with different clustering algorithms:
 		- [X] kmeans
@@ -61,11 +62,11 @@ TODO: Add explanation of scatter plots, silhouette score, etc
 		- [ ] UMAP
 - [ ] Add CI tests for core functions
 - [ ] Derive classes in src//k9kmeans/clustering from a common base class, as they are all essentially doing the same thing, would make interface easier. Probably overkill
-- [o] Cluster evaluation:
+- [X] Cluster evaluation:
 	- [X] Add script to collapse cluster dimensions and plot
 	- [X] Add script to loop over multiple experiments and make plots
-	- [ ] Include metrics like silhouette score, elbow plot for kmeans, etc
-	- [ ] Number of points/cluster (how many are noise according to dbscan?)
+	- [X] Include metrics like silhouette score, elbow plot for kmeans, etc
+	- [X] Number of points/cluster (how many are noise according to dbscan?)
 - [ ] Log and save model used for embeddings
 
 <img src="Max.jpg" alt="Max" style="width:50%;">
