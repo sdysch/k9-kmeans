@@ -6,6 +6,7 @@ import numpy as np
 from pathlib import Path
 
 from sklearn.cluster import KMeans
+from sklearn.metrics import silhouette_score
 
 # local
 from k9kmeans.logging import setup_logger
@@ -36,11 +37,14 @@ def run_kmeans(
     cluster_labels = kmeans.fit_predict(embeddings)
 
     inertia = kmeans.inertia_
+    sil_score = silhouette_score(embeddings, cluster_labels)
 
-    logger.info(f'Inertia: {inertia}')
+    logger.debug(f'KMeans inertia: {inertia}')
+    logger.debug(f'KMeans silhouette score: {sil_score}')
 
     return ClusterResult(
         labels=cluster_labels,
+        silhouette_score=sil_score,
         metadata={
             'method': 'kmeans',
             'n_clusters': n_clusters,
